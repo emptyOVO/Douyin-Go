@@ -16,7 +16,7 @@ type User struct {
 	Avatar          string  `gorm:"column:avatar"         json:"avatar"`
 	BackGroundImage string  `gorm:"column:background_image"        json:"background_image"`
 	Signature       string  `gorm:"column:signature"               json:"signature"`
-	TotalFavorite   int64   `gorm:"column:total_favorite"               json:"total_favorite"`
+	TotalFavorite   int64   `gorm:"column:total_favorited"               json:"total_favorited"`
 	WorkCount       int64   `gorm:"work_count"               json:"work_count"`
 	FavoriteCount   int64   `gorm:"column:favorite_count"               json:"favorite_count"`
 	VideoLieLists   []Video `gorm:"many2many:like;" json:"-"`
@@ -92,7 +92,7 @@ func (UserDao) UpdateFollowCount(userId, count int64) error {
 
 // UpdateTotalFavoriteCount 更新获赞数量
 func (UserDao) UpdateTotalFavoriteCount(userId, count int64) error {
-	err := db.Model(&User{}).Where("user_id = ?", userId).UpdateColumn("total_favorite", gorm.Expr("total_favorite + ?", count)).Error
+	err := db.Model(&User{}).Where("user_id = ?", userId).UpdateColumn("total_favorited", gorm.Expr("total_favorited + ?", count)).Error
 	if err != nil {
 		return err
 	}
