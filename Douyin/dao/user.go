@@ -52,7 +52,7 @@ func (UserDao) AddUser(user *User) error {
 	return nil
 }
 
-// QueryUserByID 通过id查找user
+// QueryUserByID user_id查找用户
 func (UserDao) QueryUserByID(userID int64) (*User, error) {
 	var user User
 	err := db.Where("user_id = ?", userID).Find(&user).Error
@@ -66,7 +66,7 @@ func (UserDao) QueryUserByID(userID int64) (*User, error) {
 	return &user, nil
 }
 
-// QueryUserByName 名字查找user
+// QueryUserByName 名字查找用户
 func (UserDao) QueryUserByName(name string) (*User, error) {
 	var user User
 	err := db.Where("name = ?", name).Find(&user).Error
