@@ -6,9 +6,7 @@ import (
 )
 
 type Follow struct {
-	//关注者
-	FollowId int64 `gorm:"column:follow_id"`
-	//
+	FollowId   int64 `gorm:"column:follow_id"`
 	FollowedId int64 `gorm:"column:followed_id"`
 }
 

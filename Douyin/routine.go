@@ -9,21 +9,21 @@ import (
 
 func RouterInit(r *gin.Engine) {
 	apiRouter := r.Group("/douyin")
-	// basic apis
+	// 基础接口
 	apiRouter.GET("/feed/", controller.Feed)
 	apiRouter.GET("/user/", middleware.TokenAuth(), controller.UserInfo)
-	//中间件检查账号密码是否合法
-	apiRouter.POST("/user/register/", middleware.Check(), controller.Register)
+	apiRouter.POST("/user/register/", middleware.Check(), controller.Register) //中间件检查账号密码是否合法
 	apiRouter.POST("/user/login/", controller.Login)
-	//加入中间件限制整个post请求的大小，这里设置的是3MB Limit size of POST requests for Gin framework
-	apiRouter.POST("/publish/action/", middleware.TokenAuth(), limits.RequestSizeLimiter(4<<20), controller.Publish)
+	apiRouter.POST("/publish/action/", middleware.TokenAuth(), limits.RequestSizeLimiter(4<<20), controller.Publish) //limits限制整个post请求的大小，设置为3MB
 	apiRouter.GET("/publish/list/", middleware.TokenAuth(), controller.PublishList)
-	//  extra apis - I
+
+	//互动接口
 	apiRouter.POST("/favorite/action/", middleware.TokenAuth(), controller.FavoriteAction)
 	apiRouter.GET("/favorite/list/", middleware.TokenAuth(), controller.FavoriteList)
 	apiRouter.POST("/comment/action/", middleware.TokenAuth(), controller.CommentAction)
 	apiRouter.GET("/comment/list/", middleware.TokenAuth(), controller.CommentList)
-	//  social apis - II
+
+	//社交接口
 	apiRouter.POST("/relation/action/", middleware.TokenAuth(), controller.FollowAction)
 	apiRouter.GET("/relation/follow/list/", middleware.TokenAuth(), controller.FollowList)
 	apiRouter.GET("/relation/follower/list/", middleware.TokenAuth(), controller.FollowerList)

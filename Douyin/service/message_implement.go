@@ -6,7 +6,7 @@ import (
 	"time"
 )
 
-// SendMessage 存储消息记录
+// SendMessage 发送消息，储存记录
 func SendMessage(userid, toUserId int64, action, content string) error {
 	var err error
 	switch action {

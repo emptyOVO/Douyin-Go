@@ -19,11 +19,12 @@ type PublishedResponse struct {
 	VideoLists []dao.Video `json:"video_list,omitempty"`
 }
 
+// PublishList 已发布的视频list
 func PublishList(c *gin.Context) {
-	//返回所有视频信息
+	//返回该用户所有视频信息
 	userid, _ := strconv.Atoi(c.Query("user_id"))
-
 	videoLists, err := service.PublishedVideoLists(int64(userid))
+	//错误判断
 	if err != nil {
 		log.Println(err.Error())
 		c.JSON(http.StatusOK, FeedResponse{
@@ -39,6 +40,7 @@ func PublishList(c *gin.Context) {
 	}
 }
 
+// Publish 发布视频
 func Publish(c *gin.Context) {
 	//返回所有视频信息
 	title := c.PostForm("title")
@@ -55,12 +57,12 @@ func Publish(c *gin.Context) {
 		})
 		return
 	}
-	//保证了文件名的随机性 得到文件
+	//保证了文件名的随机性并且得到文件
 	filename := filepath.Base(file.Filename)
 	//得到文件的后缀名
 	finalName := fmt.Sprintf("%d_%s", userid, filename)
-	//选择路径
-	//映射成了对外的static文件
+	//选择路径映射为对外的static文件
+	//nginx代理静态资源
 	saveFilePath := filepath.Join("./public/", finalName)
 	//保存文件到对应的路径
 	err = c.SaveUploadedFile(file, saveFilePath)
@@ -83,8 +85,6 @@ func Publish(c *gin.Context) {
 		})
 		return
 	}
-	// 192.168.187.1
-	//本机ip地址
 	//静态资源的地址
 	playUrl := "http://" + config.C.Resource.Ipaddress + ":" + config.C.Resource.Port + "/" + "public/" + finalName
 	coverUrl := "http://" + config.C.Resource.Ipaddress + ":" + config.C.Resource.Port + "/" + "public/" + finalName + ".png"

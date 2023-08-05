@@ -40,7 +40,6 @@ func (MessageDao) AddMessage(message *Message) error {
 func (MessageDao) QueryMessageLists(userid, ToUserId int64, preMsgTime int64) ([]Message, error) {
 	var MessageLists []Message
 	MessageLists = make([]Message, 0, 10)
-	//fixme
 	err := db.Raw("SELECT * FROM `message` WHERE message.create_time>? and ((to_user_id = ? and message.from_user_id  = ?) or (to_user_id = ? and message.from_user_id = ?)) ORDER BY  create_time", preMsgTime, userid, ToUserId, ToUserId, userid).Scan(&MessageLists).Error
 	if err != nil {
 		return nil, err

@@ -34,13 +34,13 @@ type Resource struct {
 
 var C Config
 
+// ConfInit 将读取的yaml文件解析为响应的 struct
 func ConfInit() error {
 	yamlFile, err := os.ReadFile("./config/config.yaml")
 	if err != nil {
 		fmt.Println(err.Error())
 		return err
 	}
-	// 将读取的yaml文件解析为响应的 struct
 	err = yaml.Unmarshal(yamlFile, &C)
 	if err != nil {
 		fmt.Println(err.Error())

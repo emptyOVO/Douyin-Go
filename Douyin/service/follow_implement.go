@@ -55,11 +55,12 @@ func FollowOrCancel(userid int64, toUserid int64, action string) error {
 		if err != nil {
 			return err
 		}
+		//缓存层
 		err = cache.DecrByUserFollowCount(toUserid)
 		err = cache.DecrByUserFollowerCount(userid)
 		err = cache.DeleteUserRelation(userid, toUserid)
 		if err != nil {
-			//fixme 这里不能直接返回错误只是缓存而已
+			//缓存只需打日志
 			log.Println(err.Error())
 		}
 	}

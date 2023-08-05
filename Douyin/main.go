@@ -6,42 +6,29 @@ import (
 	"Douyin/dao"
 	"fmt"
 	"github.com/gin-gonic/gin"
-	"log"
-	"net/http"
 	_ "net/http/pprof"
 )
 
 func main() {
-	//pprof监听
-	go func() {
-		log.Println(http.ListenAndServe(":6060", nil))
-	}()
-
 	var err error
-	//1.初始化配置文件
-	err = config.ConfInit()
+	err = config.ConfInit() //初始化配置文件
 	if err != nil {
 		fmt.Println(err.Error())
 		return
 	}
-	//2.初始化redis数据库
-	err = cache.RedisPoolInit()
+	err = cache.RedisPoolInit() //初始化redis
 	if err != nil {
 		fmt.Println(err.Error())
 		return
 	}
-	//3.初始化mysql数据库
-	err = dao.DbInit()
+	err = dao.DbInit() //初始化mysql
 	if err != nil {
 		fmt.Println(err.Error())
 		return
 	}
-	//4.初始化http框架
-	r := gin.Default()
-	//5.初始化吧路由
-	RouterInit(r)
-	//6.启动程序
-	err = r.Run(":8000")
+	r := gin.Default()   //初始化gin
+	RouterInit(r)        //初始化路由
+	err = r.Run(":8000") //启动并监听端口
 	if err != nil {
 		fmt.Println(err.Error())
 		return

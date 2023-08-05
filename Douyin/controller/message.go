@@ -15,11 +15,14 @@ type MessageResponse struct {
 	MessageLists []dao.Message `json:"message_list"`
 }
 
+// MessageAction 消息发送接口
 func MessageAction(c *gin.Context) {
-	//得到userid
+	//解析各字段内容
 	userid := c.MustGet("userid").(int64)
-	//得到发送消息的对方id
 	toUserId, err := strconv.Atoi(c.Query("to_user_id"))
+	action := c.Query("action_type")
+	content := c.Query("content")
+	//错误判断
 	if err != nil {
 		log.Println(err.Error())
 		c.JSON(http.StatusOK, common.Response{
@@ -28,11 +31,7 @@ func MessageAction(c *gin.Context) {
 		})
 		return
 	}
-	//得到发送消息的动作
-	action := c.Query("action_type")
-	//消息内容
-	content := c.Query("content")
-
+	//service方法调用
 	err = service.SendMessage(userid, int64(toUserId), action, content)
 	if err != nil {
 		log.Println(err.Error())
@@ -61,6 +60,8 @@ func MessageChat(c *gin.Context) {
 	userid := c.MustGet("userid").(int64)
 	//得到对方用户id
 	toUserId, err = strconv.Atoi(c.Query("to_user_id"))
+	//得到上次最新消息的时间
+	preMsgTime, err = strconv.Atoi(c.Query("pre_msg_time"))
 	if err != nil {
 		log.Println(err.Error())
 		c.JSON(http.StatusOK, MessageResponse{
@@ -71,8 +72,6 @@ func MessageChat(c *gin.Context) {
 		})
 		return
 	}
-	//得到上次最新消息的时间
-	preMsgTime, err = strconv.Atoi(c.Query("pre_msg_time"))
 
 	if err != nil {
 		log.Println(err.Error())

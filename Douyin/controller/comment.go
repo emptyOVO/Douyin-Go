@@ -27,14 +27,13 @@ func CommentAction(c *gin.Context) {
 		commentId int
 		err       error
 	)
-	//得到userid
+	//解析各字段内容
 	userid := c.MustGet("userid").(int64)
-	//得到评论动作
 	action := c.Query("action_type")
-	//得到评论内容
 	commentText := c.Query("comment_text")
-	//得到video_id
 	videoIdStr := c.Query("video_id")
+	commentIdStr := c.Query("comment_id")
+
 	if videoIdStr != "" {
 		videoId, err = strconv.Atoi(c.Query("video_id"))
 		if err != nil {
@@ -45,8 +44,6 @@ func CommentAction(c *gin.Context) {
 			return
 		}
 	}
-	//得到评论id
-	commentIdStr := c.Query("comment_id")
 	if commentIdStr != "" {
 		commentId, err = strconv.Atoi(commentIdStr)
 		if err != nil {
@@ -57,7 +54,7 @@ func CommentAction(c *gin.Context) {
 			return
 		}
 	}
-	//进行方法判断
+	//方法判断调用service
 	Comment, err = service.CommentAddOrDelete(action, userid, int64(videoId), int64(commentId), commentText)
 	if err != nil {
 		log.Println(err.Error())

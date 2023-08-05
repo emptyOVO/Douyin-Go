@@ -19,7 +19,6 @@ type FavoriteListsResponse struct {
 }
 
 func FavoriteAction(c *gin.Context) {
-	//解析得到id
 	userid := c.MustGet("userid").(int64)
 	action := c.Query("action_type")
 	videoId, err := strconv.Atoi(c.Query("video_id"))

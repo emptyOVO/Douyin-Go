@@ -17,10 +17,11 @@ type FeedResponse struct {
 
 func Feed(c *gin.Context) {
 	token := c.Query("token")
-	//返回所有视频信息
+	//返回视频信息
+	//按照时间降序
 	videoLists, timestamp, err := service.VideoStream(token)
 	if len(videoLists) >= 30 {
-		//限制只能返回最多三十条视频
+		//限制返回最多三十条结果
 		videoLists = videoLists[0:30]
 	}
 	if err != nil {

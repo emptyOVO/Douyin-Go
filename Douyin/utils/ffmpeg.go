@@ -8,6 +8,7 @@ import (
 	"os"
 )
 
+// GenerateSnapshot ffmpeg生成封面照片
 func GenerateSnapshot(videoPath, snapshotPath string, frameNum int) (err error) {
 	buf := bytes.NewBuffer(nil)
 	err = ffmpeg.Input(videoPath).

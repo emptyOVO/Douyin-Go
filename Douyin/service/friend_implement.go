@@ -7,6 +7,7 @@ import (
 	"fmt"
 )
 
+// GetFriendLists 朋友列表
 func GetFriendLists(userid int64) ([]dao.User, error) {
 	var err error
 	var UserLists []dao.User

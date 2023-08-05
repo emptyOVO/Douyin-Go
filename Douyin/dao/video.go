@@ -48,13 +48,11 @@ func (VideoDao) QueryVideo() ([]Video, error) {
 		fmt.Println(err.Error())
 		return nil, err
 	}
-	//fmt.Printf("%#v", videoLists)
 	return videoLists, nil
 }
 
 func (VideoDao) AddVideo(video *Video) error {
 	res := db.Create(video)
-	//fmt.Println("the key is : ", user.ID)
 	err := res.Error
 	if err != nil {
 		return err
@@ -63,7 +61,6 @@ func (VideoDao) AddVideo(video *Video) error {
 }
 
 func (VideoDao) UpdateCommentCount(videoId, count int64) error {
-	//fmt.Println("the key is : ", user.ID)
 	err := db.Model(&Video{}).Where("video_id = ?", videoId).UpdateColumn("comment_count", gorm.Expr(" comment_count + ?", count)).Error
 	if err != nil {
 		return err
@@ -71,7 +68,6 @@ func (VideoDao) UpdateCommentCount(videoId, count int64) error {
 	return nil
 }
 func (VideoDao) UpdateFavoriteCount(videoId, count int64) error {
-	//fmt.Println("the key is : ", user.ID)
 	err := db.Model(&Video{}).Where("video_id = ?", videoId).UpdateColumn("favorite_count", gorm.Expr(" favorite_count + ?", count)).Error
 	if err != nil {
 		return err

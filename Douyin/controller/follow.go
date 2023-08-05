@@ -16,13 +16,11 @@ type FollowResponse struct {
 }
 
 func FollowAction(c *gin.Context) {
-
+	//解析字段
 	action := c.Query("action_type")
-
 	toUserid, err := strconv.Atoi(c.Query("to_user_id"))
-
-	//直接获取id
 	userid := c.MustGet("userid").(int64)
+
 	if err != nil {
 		log.Println(err.Error())
 		c.JSON(http.StatusOK, common.Response{

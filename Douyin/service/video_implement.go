@@ -11,7 +11,7 @@ import (
 
 func VideoStream(token string) ([]dao.Video, int64, error) {
 	VideoLists, err := dao.GetVideoInstance().QueryVideo()
-	//如果token不为空
+	//token不为空则
 	if token != "" {
 		_, clime, _ := utils.ParseToken(token)
 		var userLists []dao.User
@@ -24,8 +24,7 @@ func VideoStream(token string) ([]dao.Video, int64, error) {
 		if err != nil {
 			return VideoLists, 0, err
 		}
-		//fixme 缓存
-		//设置 用户是否关注 视频是否点赞
+		//遍历video并在缓存中先判断是否关注 视频是否点赞
 		for index := range VideoLists {
 			if cache.IsUserRelation(clime.UserId, VideoLists[index].Author.ID) {
 				VideoLists[index].Author.IsFollow = true
@@ -46,7 +45,7 @@ func VideoStream(token string) ([]dao.Video, int64, error) {
 					}
 				}
 			}
-
+			//计数
 			err := common.UserCountSearchStrategy(&VideoLists[index].Author, VideoLists[index].Author.ID)
 			if err != nil {
 				return nil, 0, err

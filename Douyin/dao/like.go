@@ -25,29 +25,25 @@ func GetLikeInstance() *LikeDao {
 	return likeDao
 }
 
-// AddLike 添加映射
+// AddLike 增加
 func (LikeDao) AddLike(like *Like) error {
 	err := db.Create(like).Error
 	if err != nil {
 		return err
 	}
-	//要对对应的视频点赞数量进行更新
-	//db.Update("")
 	return nil
 }
 
-// DeleteLike 删除映射
+// DeleteLike 删除
 func (LikeDao) DeleteLike(like *Like) error {
-	//会删除所有符合条件得到对象 但是无所谓 都行
 	err := db.Where("user_id = ? and video_id = ?", like.UserId, like.VideoId).Delete(like).Error
 	if err != nil {
 		return err
 	}
-	//要对视频点赞数进行更新
 	return nil
 }
 
-// QueryLikeByUserid DeleteLike 查找映射 并且返回lists
+// QueryLikeByUserid DeleteLike 查找且返回lists
 func (LikeDao) QueryLikeByUserid(userid int64) ([]Video, error) {
 	user := &User{}
 	err := db.Preload("VideoLieLists").Where("user_id = ?", userid).Preload("VideoLieLists.Author").Find(user).Error

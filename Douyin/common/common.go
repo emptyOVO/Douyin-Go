@@ -10,7 +10,7 @@ type Response struct {
 	StatusMsg  string `json:"status_msg"`  // 返回状态描述
 }
 
-// UserCountSearchStrategy 计数的查找(获赞数，作品数，点赞数)
+// UserCountSearchStrategy 加入redis缓存计数的查找(获赞数，作品数，点赞数)
 func UserCountSearchStrategy(user *dao.User, userid int64) error {
 	var err error
 	user.TotalFavorite, err = cache.GetUserTotalFavoriteCount(userid)

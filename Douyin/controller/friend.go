@@ -10,6 +10,7 @@ import (
 	"strconv"
 )
 
+// FriendList 即返回互相关注的user
 func FriendList(c *gin.Context) {
 
 	var userLists []dao.User
@@ -24,7 +25,7 @@ func FriendList(c *gin.Context) {
 		})
 		return
 	}
-
+	//调用service层方法
 	userLists, err = service.GetFriendLists(int64(userid))
 	if err != nil {
 		log.Println(err.Error())

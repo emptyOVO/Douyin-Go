@@ -5,7 +5,7 @@ import (
 	"fmt"
 )
 
-// Md5Encryption MD5加密函数封装
+// Md5Encryption MD5加密封装
 func Md5Encryption(password string) string {
 	data := []byte(password)
 	hash := md5.Sum(data)

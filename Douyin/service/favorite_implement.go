@@ -29,6 +29,7 @@ func GetLikeLists(userid int64) ([]dao.Video, error) {
 	return VideoLists, nil
 }
 
+// LikeOrCancel 点赞或取消点赞动作
 func LikeOrCancel(FavoriteAction string, userid int64, videoId int64) error {
 	var (
 		err    error
@@ -39,8 +40,6 @@ func LikeOrCancel(FavoriteAction string, userid int64, videoId int64) error {
 	if err != nil {
 		fmt.Println(err.Error())
 	}
-
-	//点赞和取消点赞的动作 更新数量
 	switch FavoriteAction {
 	//加入redis缓存
 	case "1":
@@ -66,16 +65,15 @@ func LikeOrCancel(FavoriteAction string, userid int64, videoId int64) error {
 		//缓存加一
 		err = cache.IncrByUserFavoriteCount(userid)
 		if err != nil {
-			//fixme 这里不应该直接返回错误 因为只是缓存失效了
-			fmt.Println(err.Error())
+			//缓存失效只需要打日志就行
+			log.Println(err.Error())
 		}
 		//缓存加一
 		err = cache.IncrByUserTotalFavorite(userId)
 		//更新total_favorite计数
 		err = dao.GetUserInstance().UpdateTotalFavoriteCount(userId, 1)
 		if err != nil {
-			//fixme 这里不应该直接返回err 仅仅只是缓存
-			fmt.Println(err.Error())
+			log.Println(err.Error())
 		}
 	case "2":
 		err = dao.GetLikeInstance().DeleteLike(&dao.Like{
@@ -96,7 +94,6 @@ func LikeOrCancel(FavoriteAction string, userid int64, videoId int64) error {
 		//缓存减一
 		err = cache.DecrByUserFavoriteCount(userid)
 		if err != nil {
-			//fixme 这里不应该直接返回错误 因为只是缓存失效了
 			log.Println(err.Error())
 		}
 		//缓存减一

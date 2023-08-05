@@ -21,6 +21,8 @@ type UserResponse struct {
 	User dao.User `json:"user"`
 }
 
+// Register 用户注册接口
+// TODO: 后续可以增加短信或邮箱验证码验证
 func Register(c *gin.Context) {
 
 	username := c.Query("username")
@@ -43,6 +45,7 @@ func Register(c *gin.Context) {
 	}
 }
 
+// Login 用户登录接口
 func Login(c *gin.Context) {
 	username := c.Query("username")
 	password := c.Query("password")

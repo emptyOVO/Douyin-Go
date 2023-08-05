@@ -22,7 +22,7 @@ func GenerateToken(username string, userId int64) (string, error) {
 	expireTime := nowTime.Add(expire_time)
 
 	claims := Claims{
-		userId, // 自行添加的信息
+		userId, // 添加的信息
 		username,
 		jwt.StandardClaims{
 			ExpiresAt: expireTime.Unix(), // 设置token过期时间

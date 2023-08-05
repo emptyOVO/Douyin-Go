@@ -45,203 +45,6 @@ func getUserVideoRelation(userid int64) string {
 	return fmt.Sprintf("%s_%d", "UserVideoRelationKey", userid)
 }
 
-// SetUserRelation 建立用户和用户的关系集合
-func SetUserRelation(userid, touserId int64) error {
-	conn := RedisPool.Get()
-	defer func(conn redis.Conn) {
-		err := conn.Close()
-		if err != nil {
-		}
-	}(conn)
-
-	key := getUserRelationKey(userid)
-	//往集合中加关注的人
-	_, err := conn.Do("SADD", key, touserId)
-	if err != nil {
-		return err
-	}
-	return nil
-}
-
-// SetUserVideoRelation 建立用户和视频的关系集合
-func SetUserVideoRelation(userid, videoId int64) error {
-	conn := RedisPool.Get()
-	defer func(conn redis.Conn) {
-		err := conn.Close()
-		if err != nil {
-		}
-	}(conn)
-	key := getUserVideoRelation(userid)
-	//往集合中加关注的人
-	_, err := conn.Do("SADD", key, videoId)
-	if err != nil {
-		return err
-	}
-	return nil
-}
-
-// IsUserRelation 判断是否在集合中
-func IsUserRelation(userid, touserId int64) bool {
-	conn := RedisPool.Get()
-	defer func(conn redis.Conn) {
-		err := conn.Close()
-		if err != nil {
-		}
-	}(conn)
-	key := getUserRelationKey(userid)
-	res, err := redis.Int64(conn.Do("SISMEMBER", key, touserId))
-	if err != nil {
-		log.Println(err.Error())
-		return false
-	}
-	if res == 0 {
-		fmt.Printf("%#v", res)
-		return false
-	}
-	return true
-}
-
-// IsUserVideoRelation 判断是否在集合里面
-func IsUserVideoRelation(userid, videoId int64) bool {
-	conn := RedisPool.Get()
-	defer func(conn redis.Conn) {
-		err := conn.Close()
-		if err != nil {
-		}
-	}(conn)
-
-	key := getUserVideoRelation(userid)
-
-	res, err := redis.Int64(conn.Do("SISMEMBER", key, videoId))
-	if err != nil {
-		log.Println(err.Error())
-		return false
-	}
-	if res == 0 {
-		return false
-	}
-	return true
-}
-func DeleteUserRelation(userid, touserId int64) error {
-	conn := RedisPool.Get()
-	defer func(conn redis.Conn) {
-		err := conn.Close()
-		if err != nil {
-		}
-	}(conn)
-
-	key := getUserRelationKey(userid)
-	//往集合中加关注的人
-	_, err := conn.Do("SREM", key, touserId)
-	if err != nil {
-		return err
-	}
-	return nil
-}
-
-// DeleteUserVideoRelation 删除关系
-func DeleteUserVideoRelation(userid, videoId int64) error {
-	conn := RedisPool.Get()
-	defer func(conn redis.Conn) {
-		err := conn.Close()
-		if err != nil {
-		}
-	}(conn)
-	key := getUserVideoRelation(userid)
-	//往集合中加关注的人
-	_, err := conn.Do("SREM", key, videoId)
-	if err != nil {
-		return err
-	}
-	return nil
-}
-
-// SetUserCount 设置user计数
-func SetUserCount(userid int64) error {
-	conn := RedisPool.Get()
-
-	defer func(conn redis.Conn) {
-		err := conn.Close()
-		if err != nil {
-		}
-	}(conn)
-
-	key := getUserCountKey(userid)
-	_, err := conn.Do("hmset", redis.Args{key}.AddFlat(map[string]int64{
-		"followCount":   0,
-		"followerCount": 0,
-		"workCount":     0,
-		"favoriteCount": 0,
-		"totalFavorite": 0,
-	})...)
-	if err != nil {
-		return err
-	}
-	return nil
-}
-
-func GetUserFollowCount(userID int64) (int64, error) {
-	res, err := get(userID, "followCount")
-	return res, err
-}
-func GetUserFollowerCount(userID int64) (int64, error) {
-	res, err := get(userID, "followerCount")
-	return res, err
-}
-func GetUserWorkCount(userID int64) (int64, error) {
-	res, err := get(userID, "workCount")
-	return res, err
-}
-func GetUserFavoriteCount(userID int64) (int64, error) {
-	res, err := get(userID, "favoriteCount")
-	return res, err
-}
-func GetUserTotalFavoriteCount(userID int64) (int64, error) {
-	res, err := get(userID, "totalFavorite")
-	return res, err
-}
-
-func DecrByUserFollowCount(userID int64) error {
-	err := change(userID, "followCount", -1)
-	return err
-}
-func IncrByUserFollowCount(userID int64) error {
-	err := change(userID, "followCount", 1)
-	return err
-}
-
-func DecrByUserFollowerCount(userID int64) error {
-	err := change(userID, "followerCount", -1)
-	return err
-}
-func IncrByUserFollowerCount(userID int64) error {
-	err := change(userID, "followerCount", 1)
-	return err
-}
-
-func IncrByUserWorkCount(userID int64) error {
-	err := change(userID, "workCount", 1)
-	return err
-}
-
-func DecrByUserTotalFavorite(userID int64) error {
-	err := change(userID, "totalFavorite", -1)
-	return err
-}
-func IncrByUserTotalFavorite(userID int64) error {
-	err := change(userID, "totalFavorite", 1)
-	return err
-}
-
-func DecrByUserFavoriteCount(userID int64) error {
-	err := change(userID, "favoriteCount", -1)
-	return err
-}
-func IncrByUserFavoriteCount(userID int64) error {
-	err := change(userID, "favoriteCount", 1)
-	return err
-}
-
 func change(userid int64, field string, incr int64) error {
 
 	key := getUserCountKey(userid)
@@ -301,6 +104,225 @@ func get(userid int64, field string) (int64, error) {
 		return 0, err
 	}
 	return res, nil
+}
+
+// SetUserRelation 建立用户和用户的关系集合
+func SetUserRelation(userid, touserId int64) error {
+	conn := RedisPool.Get()
+	defer func(conn redis.Conn) {
+		err := conn.Close()
+		if err != nil {
+		}
+	}(conn)
+
+	key := getUserRelationKey(userid)
+	//往集合中加关注的人
+	_, err := conn.Do("SADD", key, touserId)
+	if err != nil {
+		log.Println(err)
+	}
+	return nil
+}
+
+// SetUserVideoRelation 建立用户和视频的关系集合
+func SetUserVideoRelation(userid, videoId int64) error {
+	conn := RedisPool.Get()
+	defer func(conn redis.Conn) {
+		err := conn.Close()
+		if err != nil {
+			log.Println(err)
+		}
+	}(conn)
+	key := getUserVideoRelation(userid)
+	//往集合中加点赞的人
+	_, err := conn.Do("SADD", key, videoId)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+// IsUserRelation 判断是否在集合中
+func IsUserRelation(userid, touserId int64) bool {
+	conn := RedisPool.Get()
+	defer func(conn redis.Conn) {
+		err := conn.Close()
+		if err != nil {
+		}
+	}(conn)
+	key := getUserRelationKey(userid)
+	res, err := redis.Int64(conn.Do("SISMEMBER", key, touserId))
+	if err != nil {
+		log.Println(err.Error())
+		return false
+	}
+	if res == 0 {
+		fmt.Printf("%#v", res)
+		return false
+	}
+	return true
+}
+
+// IsUserVideoRelation 判断是否在集合里面
+func IsUserVideoRelation(userid, videoId int64) bool {
+	conn := RedisPool.Get()
+	defer func(conn redis.Conn) {
+		err := conn.Close()
+		if err != nil {
+		}
+	}(conn)
+
+	key := getUserVideoRelation(userid)
+
+	res, err := redis.Int64(conn.Do("SISMEMBER", key, videoId))
+	if err != nil {
+		log.Println(err.Error())
+		return false
+	}
+	if res == 0 {
+		return false
+	}
+	return true
+}
+func DeleteUserRelation(userid, touserId int64) error {
+	conn := RedisPool.Get()
+	defer func(conn redis.Conn) {
+		err := conn.Close()
+		if err != nil {
+		}
+	}(conn)
+
+	key := getUserRelationKey(userid)
+	_, err := conn.Do("SREM", key, touserId)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+// DeleteUserVideoRelation 删除关系
+func DeleteUserVideoRelation(userid, videoId int64) error {
+	conn := RedisPool.Get()
+	defer func(conn redis.Conn) {
+		err := conn.Close()
+		if err != nil {
+		}
+	}(conn)
+	key := getUserVideoRelation(userid)
+	//往集合中加关注的人
+	_, err := conn.Do("SREM", key, videoId)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+// SetUserCount 设置user计数
+func SetUserCount(userid int64) error {
+	conn := RedisPool.Get()
+
+	defer func(conn redis.Conn) {
+		err := conn.Close()
+		if err != nil {
+		}
+	}(conn)
+
+	key := getUserCountKey(userid)
+	_, err := conn.Do("hmset", redis.Args{key}.AddFlat(map[string]int64{
+		"followCount":   0,
+		"followerCount": 0,
+		"workCount":     0,
+		"favoriteCount": 0,
+		"totalFavorite": 0,
+	})...)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+// GetUserFollowCount 获取用户关注数量
+func GetUserFollowCount(userID int64) (int64, error) {
+	res, err := get(userID, "followCount")
+	return res, err
+}
+
+// GetUserFollowerCount  获取用户粉丝数量
+func GetUserFollowerCount(userID int64) (int64, error) {
+	res, err := get(userID, "followerCount")
+	return res, err
+}
+
+// GetUserWorkCount 获取用户作品数量
+func GetUserWorkCount(userID int64) (int64, error) {
+	res, err := get(userID, "workCount")
+	return res, err
+}
+
+// GetUserFavoriteCount 获取用户喜欢数量
+func GetUserFavoriteCount(userID int64) (int64, error) {
+	res, err := get(userID, "favoriteCount")
+	return res, err
+}
+
+// GetUserTotalFavoriteCount 获取用户总获赞数量
+func GetUserTotalFavoriteCount(userID int64) (int64, error) {
+	res, err := get(userID, "totalFavorite")
+	return res, err
+}
+
+// DecrByUserFollowCount 减少关注数
+func DecrByUserFollowCount(userID int64) error {
+	err := change(userID, "followCount", -1)
+	return err
+}
+
+// IncrByUserFollowCount 增加关注数
+func IncrByUserFollowCount(userID int64) error {
+	err := change(userID, "followCount", 1)
+	return err
+}
+
+// DecrByUserFollowerCount 减少粉丝数
+func DecrByUserFollowerCount(userID int64) error {
+	err := change(userID, "followerCount", -1)
+	return err
+}
+
+// IncrByUserFollowerCount 增加粉丝数
+func IncrByUserFollowerCount(userID int64) error {
+	err := change(userID, "followerCount", 1)
+	return err
+}
+
+// IncrByUserWorkCount 增加作品数量
+func IncrByUserWorkCount(userID int64) error {
+	err := change(userID, "workCount", 1)
+	return err
+}
+
+// DecrByUserTotalFavorite 减少总获赞数量
+func DecrByUserTotalFavorite(userID int64) error {
+	err := change(userID, "totalFavorite", -1)
+	return err
+}
+
+// IncrByUserTotalFavorite 增加总获赞数量
+func IncrByUserTotalFavorite(userID int64) error {
+	err := change(userID, "totalFavorite", 1)
+	return err
+}
+
+// DecrByUserFavoriteCount 减少用户点赞数量
+func DecrByUserFavoriteCount(userID int64) error {
+	err := change(userID, "favoriteCount", -1)
+	return err
+}
+
+// IncrByUserFavoriteCount 增加用户点赞数量
+func IncrByUserFavoriteCount(userID int64) error {
+	err := change(userID, "favoriteCount", 1)
+	return err
 }
 
 // UserIsExists 提供给中间件验证的方法

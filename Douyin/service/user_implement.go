@@ -8,7 +8,7 @@ import (
 	"errors"
 )
 
-// UserRegisInfo 返回给handle层的数据
+// UserRegisInfo 返回数据
 type UserRegisInfo struct {
 	Token  string `json:"token"`   // 用户鉴权token
 	UserID int64  `json:"user_id"` // 用户id
@@ -40,8 +40,8 @@ func UserRegister(username string, password string) (*UserRegisInfo, error) {
 		FollowerCount:   0,
 		Password:        password,
 		Signature:       "这是一条个性签名",
-		Avatar:          "http://dummyimage.com/400x400",
-		BackGroundImage: "http://dummyimage.com/400x400",
+		Avatar:          "https://cdn.pixabay.com/photo/2016/03/27/18/10/bear-1283347_1280.jpg",
+		BackGroundImage: "https://cdn.pixabay.com/photo/2016/03/27/18/10/bear-1283347_1280.jpg",
 	}
 
 	//用户不存在则创建用户
@@ -56,11 +56,9 @@ func UserRegister(username string, password string) (*UserRegisInfo, error) {
 	}
 
 	token, err = utils.GenerateToken(username, user.ID)
-	//fmt.Printf("token is %s", token)
 	if err != nil {
 		return nil, err
 	}
-
 	info.Token = token
 	info.UserID = user.ID
 	return &info, nil
@@ -70,7 +68,7 @@ func UserLogin(username string, password string) (*UserRegisInfo, error) {
 	var err error
 	var token string
 	var user *dao.User
-	//进行md5加密
+	//密码md5加密
 	password = utils.Md5Encryption(password)
 	user, err = dao.GetUserInstance().QueryUserByName(username)
 	//判断用户是否存在
@@ -81,19 +79,18 @@ func UserLogin(username string, password string) (*UserRegisInfo, error) {
 	if err != nil {
 		return nil, err
 	}
-	//验证密码是否正确
+
 	if password != user.Password {
 		err = errors.New("password is wrong")
 		return nil, err
 	}
-	//生成token
+	//验证密码正确则生成token
 	token, err = utils.GenerateToken(username, user.ID)
-	//成功返回
 	return &UserRegisInfo{Token: token, UserID: user.ID}, nil
 }
 
 func GetUserInfo(userid int64) (*dao.User, error) {
-	//返回给Handle的user
+	//返回user数据
 	var err error
 	//Dao数据层user
 	var user *dao.User
@@ -101,7 +98,7 @@ func GetUserInfo(userid int64) (*dao.User, error) {
 	if err != nil {
 		return nil, err
 	}
-	//对三个count进行查找赋值
+	//对三个count进行查找赋值（获赞数，作品数，点赞数）
 	err = common.UserCountSearchStrategy(user, userid)
 	return user, nil
 }

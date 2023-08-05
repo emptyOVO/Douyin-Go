@@ -8,7 +8,7 @@ import (
 	"time"
 )
 
-// CommentAddOrDelete 1.进行评论 2.删除评论
+// CommentAddOrDelete 1.评论 2.删除评论
 func CommentAddOrDelete(CommentAction string, userid int64, videoId int64, commentId int64, commentText string) (*dao.Comment, error) {
 	var err error
 

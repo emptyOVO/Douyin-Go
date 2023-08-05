@@ -17,7 +17,6 @@ func PublishedVideoLists(userid int64) ([]dao.Video, error) {
 		err        error
 	)
 	VideoLists, err = dao.GetVideoInstance().QueryVideoByUserId(userid)
-	//fixme
 	if len(VideoLists) == 0 {
 		err = errors.New("video lists not exists")
 		return nil, err
@@ -30,6 +29,7 @@ func PublishedVideoLists(userid int64) ([]dao.Video, error) {
 		fmt.Println(err.Error())
 		return nil, err
 	}
+	//缓存层
 	for index1 := range VideoLists {
 		if cache.IsUserVideoRelation(userid, VideoLists[index1].ID) {
 			VideoLists[index1].IsFavorite = true
@@ -48,7 +48,6 @@ func PublishedVideoLists(userid int64) ([]dao.Video, error) {
 }
 
 // PublishVideo 投稿视频
-// 并且更新作品数量
 func PublishVideo(userid int64, playUrl, coverUrl, title string) error {
 	err := dao.GetVideoInstance().AddVideo(&dao.Video{
 		UserId:        userid,
@@ -67,6 +66,7 @@ func PublishVideo(userid int64, playUrl, coverUrl, title string) error {
 	if err != nil {
 		log.Println(err.Error())
 	}
+	// 并且更新作品数量
 	err = dao.GetUserInstance().UpdateWorkCount(userid, 1)
 	if err != nil {
 		log.Println(err.Error())
