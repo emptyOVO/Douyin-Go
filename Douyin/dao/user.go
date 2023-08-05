@@ -31,7 +31,7 @@ type UserDao struct {
 
 var userDao *UserDao
 
-// 单例 接口 表示只创建一次对象
+// 只创建一次对象的单例接口
 var userOnce sync.Once
 
 func GetUserInstance() *UserDao {
@@ -52,7 +52,7 @@ func (UserDao) AddUser(user *User) error {
 	return nil
 }
 
-// QueryUserByID id查找user
+// QueryUserByID 通过id查找user
 func (UserDao) QueryUserByID(userID int64) (*User, error) {
 	var user User
 	err := db.Where("user_id = ?", userID).Find(&user).Error
@@ -77,7 +77,6 @@ func (UserDao) QueryUserByName(name string) (*User, error) {
 	if err != nil {
 		return nil, err
 	}
-	//逃逸分析
 	return &user, nil
 }
 
