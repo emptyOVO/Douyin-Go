@@ -9,7 +9,7 @@ type Comment struct {
 	VideoId     int64  `gorm:"column:video_id"   json:"-"`
 	CommentText string `gorm:"column:comment_text"   json:"content,omitempty"`
 	CreateTime  string `gorm:"column:create_time"    json:"create_date,omitempty"`
-	TimeStamp   int64  `gorm:"column:timestamp"      json:"-"`
+	TimeStamp   int64  `gorm:"column:timestamp"      json:"-"` //实现根据时间倒叙排列评论的功能
 }
 
 func (Comment) TableName() string {

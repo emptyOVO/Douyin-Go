@@ -19,7 +19,7 @@ func CommentAddOrDelete(CommentAction string, userid int64, videoId int64, comme
 			VideoId:     videoId,
 			CommentText: commentText,
 			CreateTime:  time.Now().Format("01-02"),
-			TimeStamp:   time.Now().Unix(),
+			TimeStamp:   time.Now().Unix(), //加入时间戳属性
 		}
 		err = dao.GetCommentInstance().AddComment(&comment)
 		if err != nil {
@@ -52,7 +52,7 @@ func CommentAddOrDelete(CommentAction string, userid int64, videoId int64, comme
 	return nil, nil
 }
 
-// GetCommentLists 按照评论发布时间的倒叙返回评论列表
+// GetCommentLists 加入timestamp按照评论发布时间的倒叙返回评论列表
 func GetCommentLists(videoId int64) ([]dao.Comment, error) {
 	var err error
 	var CommentLists []dao.Comment
