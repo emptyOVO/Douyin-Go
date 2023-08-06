@@ -29,11 +29,11 @@
 
 ###  2.2 数据库结构与业务逻辑
 
-<img src="C:\Users\高毅飞\Desktop\数据库架构.png" alt="数据库架构" style="zoom:50%;" />
+<img src="images/数据库架构.png" style="zoom:50%;" />
 
 **为了让表与表之间的联系更加直观我做了另外一个表格，同时这也是简易版抖音的业务逻辑**
 
-![user1](C:\Users\高毅飞\Desktop\user1.png)
+![user1](images/user1.png)
 
 ​				**其中like表与follow结构相近，储存的都是关系，但是对象是user与video**
 
@@ -62,7 +62,7 @@
 
 ​					**数据查询逻辑（也算自己做总结，以后开发的时候可以用，不过有待改进就是了）**
 
-<img src="C:\Users\高毅飞\Desktop\查询逻辑.png" alt="查询逻辑" style="zoom: 50%;" />
+<img src="images/查询逻辑.png" alt="查询逻辑" style="zoom: 50%;" />
 
 ###  3.2 项目安全性能
 
@@ -70,7 +70,7 @@
 
 ps: 本来想着github上找一找类似spingsecurity之类的安全框架进行使用，不过似乎只找到一个restgate比较适合，但是可能需要前端在请求头上做更改（  O.o？)于是没有进行整合
 
-![image-20230806222209710](C:\Users\高毅飞\Desktop\image-20230806222209710.png)
+![image-20230806222209710](images/image-20230806222209710.png)
 
 ###  3.3 代码风格
 
