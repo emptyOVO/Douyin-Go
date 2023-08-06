@@ -62,7 +62,7 @@
 
 ​					**数据查询逻辑（也算自己做总结，以后开发的时候可以用，不过有待改进就是了）**
 
-<img src="images/查询逻辑.png" alt="查询逻辑" style="zoom: 30%;" />
+<img src="images/查询逻辑.png" alt="查询逻辑" style="zoom: 100%;" />
 
 ###  3.2 项目安全性能
 
