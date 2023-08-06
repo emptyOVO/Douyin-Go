@@ -16,20 +16,20 @@
 
 ```go
 └─Douyin
-    ├─cache			--缓存层
+    ├─cache	--缓存层
     ├─common		--公共类
     ├─config		--配置类
     ├─controller	--控制器
-    ├─dao			--底层实体类
+    ├─dao	--底层实体类
     ├─middleware	--中间件类
     ├─public		--静态资源仓库
     ├─service		--服务实现类
-    └─utils			--工具类
+    └─utils	--工具类
 ```
 
 ###  2.2 数据库结构与业务逻辑
 
-<img src="images/数据库架构.png" style="zoom:50%;" />
+<img src="images/数据库架构.png" style="zoom:20%;" />
 
 **为了让表与表之间的联系更加直观我做了另外一个表格，同时这也是简易版抖音的业务逻辑**
 
