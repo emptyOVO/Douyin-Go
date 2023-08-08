@@ -30,38 +30,52 @@ func GetCommentInstance() *CommentDao {
 	return commentDao
 }
 
+//fixme:加入事务处理
+
 func (CommentDao) AddComment(comment *Comment) error {
-	err := db.Create(comment).Error
+	tx := db.Begin() //开启事务
+	err := tx.Create(comment).Error
 	if err != nil {
+		tx.Rollback() //错误则事务回滚
 		return err
 	}
+	tx.Commit() //事务提交
 	return nil
 }
 func (CommentDao) DeleteCommentById(commentId int64) error {
+	tx := db.Begin() //开启事务
 	//根据主键删除评论
-	err := db.Delete(&Comment{}, commentId).Error
+	err := tx.Delete(&Comment{}, commentId).Error
 	if err != nil {
+		tx.Rollback() //错误则事务回滚
 		return err
 	}
+	tx.Commit() //事务提交
 	return nil
 }
 
 func (CommentDao) QueryListByVideoId(videoId int64) ([]Comment, error) {
 	var commentLists []Comment
+	tx := db.Begin() //开启事务
 	//按时间的倒叙排序
-	err := db.Preload("User").Where("video_id =?", videoId).Order("timestamp desc").Find(&commentLists).Error
+	err := tx.Preload("User").Where("video_id =?", videoId).Order("timestamp desc").Find(&commentLists).Error
 	if err != nil {
+		tx.Rollback() //错误则事务回滚
 		return nil, err
 	}
+	tx.Commit() //事务提交
 	return commentLists, nil
 }
 
 func (CommentDao) QueryCommentByVideoId(videoId int64) ([]Comment, error) {
 	var commentLists []Comment
+	tx := db.Begin() //开启事务
 	//按时间的倒叙排序
-	err := db.Preload("User").Where("video_id =?", videoId).Order("timestamp desc").Find(&commentLists).Error
+	err := tx.Preload("User").Where("video_id =?", videoId).Order("timestamp desc").Find(&commentLists).Error
 	if err != nil {
+		tx.Rollback() //错误则事务回滚
 		return nil, err
 	}
+	tx.Commit() //事务提交
 	return commentLists, nil
 }

@@ -42,45 +42,60 @@ func (VideoDao) QueryVideo() ([]Video, error) {
 	var videoLists []Video
 	//预分配
 	videoLists = make([]Video, 0, 10)
+	tx := db.Begin() //开启事务
 	//查询所有的视频 及其作者信息 及按时间的降序进行排列
-	err := db.Preload("Author").Order("timestamp desc").Find(&videoLists).Error
+	err := tx.Preload("Author").Order("timestamp desc").Find(&videoLists).Error
 	if err != nil {
+		tx.Rollback() //事务回滚
 		fmt.Println(err.Error())
 		return nil, err
 	}
+	tx.Commit() //事务提交
 	return videoLists, nil
 }
 
 func (VideoDao) AddVideo(video *Video) error {
-	res := db.Create(video)
+	tx := db.Begin() //开启事务
+	res := tx.Create(video)
 	err := res.Error
 	if err != nil {
+		tx.Rollback() //事务回滚
 		return err
 	}
+	tx.Commit() //事务提交
 	return nil
 }
 
 func (VideoDao) UpdateCommentCount(videoId, count int64) error {
-	err := db.Model(&Video{}).Where("video_id = ?", videoId).UpdateColumn("comment_count", gorm.Expr(" comment_count + ?", count)).Error
+	tx := db.Begin() //开启事务
+	err := tx.Model(&Video{}).Where("video_id = ?", videoId).UpdateColumn("comment_count", gorm.Expr(" comment_count + ?", count)).Error
 	if err != nil {
+		tx.Rollback() //事务回滚
 		return err
 	}
+	tx.Commit() //事务提交
 	return nil
 }
 func (VideoDao) UpdateFavoriteCount(videoId, count int64) error {
-	err := db.Model(&Video{}).Where("video_id = ?", videoId).UpdateColumn("favorite_count", gorm.Expr(" favorite_count + ?", count)).Error
+	tx := db.Begin() //开启事务
+	err := tx.Model(&Video{}).Where("video_id = ?", videoId).UpdateColumn("favorite_count", gorm.Expr(" favorite_count + ?", count)).Error
 	if err != nil {
+		tx.Rollback() //事务回滚
 		return err
 	}
+	tx.Commit() //事务提交
 	return nil
 }
 
 func (VideoDao) QueryUserIdByVideoId(videoId int64) (int64, error) {
 	var userid int64
-	err := db.Raw("SELECT user_id FROM video WHERE video.video_id = ?", videoId).Scan(&userid).Error
+	tx := db.Begin() //开启事务
+	err := tx.Raw("SELECT user_id FROM video WHERE video.video_id = ?", videoId).Scan(&userid).Error
 	if err != nil {
+		tx.Rollback() //事务回滚
 		return 0, err
 	}
+	tx.Commit() //事务提交
 	return userid, nil
 }
 
@@ -88,11 +103,14 @@ func (VideoDao) QueryVideoByUserId(userid int64) ([]Video, error) {
 	var videoLists []Video
 	//预分配
 	videoLists = make([]Video, 0, 10)
+	tx := db.Begin() //开启事务
 	//查询用户发布的视频
-	err := db.Preload("Author").Where("video.user_id = ?", userid).Order("timestamp desc").Find(&videoLists).Error
+	err := tx.Preload("Author").Where("video.user_id = ?", userid).Order("timestamp desc").Find(&videoLists).Error
 	if err != nil {
+		tx.Rollback() //事务回滚
 		fmt.Println(err.Error())
 		return nil, err
 	}
+	tx.Commit() //事务提交
 	return videoLists, nil
 }

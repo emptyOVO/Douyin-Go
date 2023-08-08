@@ -301,6 +301,12 @@ func IncrByUserWorkCount(userID int64) error {
 	return err
 }
 
+// DecrByUserWorkCount 减少作品数量（暂时无用）
+func DecrByUserWorkCount(userID int64) error {
+	err := change(userID, "workCount", -1)
+	return err
+}
+
 // DecrByUserTotalFavorite 减少总获赞数量
 func DecrByUserTotalFavorite(userID int64) error {
 	err := change(userID, "totalFavorite", -1)
