@@ -3,7 +3,7 @@
 mysql:
   username: root
   password: 123456
-  ipaddress: 127.0.0.1
+  ipaddress: 43.139.38.39
   port: 3306
   dbname: douyin
 
@@ -12,7 +12,7 @@ mysql:
 #maxidle连接池最大空闲数
 #maxactive连接池最大连接数为零不设上限
 redis:
-  ipaddress: 127.0.0.1
+  ipaddress: 43.139.38.39
   port: 6379
   maxidle: 5
   maxactive: 0
@@ -20,6 +20,6 @@ redis:
 # resource(nginx代理静态图片和视频的资源)
 # ipaddress代理静态资源的主机ip
 resource:
-  ipaddress: 192.168.2.166
+  ipaddress: 43.139.38.39
   port: 80
 

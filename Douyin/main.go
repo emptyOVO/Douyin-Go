@@ -6,7 +6,6 @@ import (
 	"Douyin/dao"
 	"fmt"
 	"github.com/gin-gonic/gin"
-	_ "net/http/pprof"
 )
 
 func main() {
