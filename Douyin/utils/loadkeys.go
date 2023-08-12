@@ -16,7 +16,8 @@ type Keys struct {
 
 func loadKeys() (*Keys, error) {
 	//****实际pem文件不能放在服务器中而应该加密保护在本地，这里为了测试图方便直接放在同一包下并且引用了绝对路径****
-	privateBytes, err := ioutil.ReadFile("C:\\Users\\高毅飞\\Desktop\\gitsubmit\\Douyin-Go\\Douyin\\utils\\private.pem")
+	//相关文件已经删除
+	privateBytes, err := ioutil.ReadFile("D:\\keys\\private.pem")
 	if err != nil {
 		log.Println(err)
 		return nil, err
@@ -36,7 +37,7 @@ func loadKeys() (*Keys, error) {
 		log.Println(err)
 		return nil, errors.New("invalid private key type")
 	}
-	publicBytes, err := ioutil.ReadFile("C:\\Users\\高毅飞\\Desktop\\gitsubmit\\Douyin-Go\\Douyin\\utils\\public.pem")
+	publicBytes, err := ioutil.ReadFile("D:\\keys\\public.pem")
 	if err != nil {
 		log.Println(err)
 		return nil, err
