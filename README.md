@@ -86,7 +86,7 @@ ps: 本来想着github上找一找类似spingsecurity之类的安全框架进行
 
 ###  3.5 单元测试覆盖率较高
 
-在utils层，service层和cache层均进行了单元测试的覆盖，对每个函数进行了测试，大致做到了高覆盖率
+在utils层，service层，middleware层，common层和cache层均进行了单元测试的覆盖，对每个函数进行了测试，大致做到了高覆盖率
 
 ##  四，演示视频（手机端apk联调）
 详情见飞书云文档：[飞书文档](https://owpzimaggfm.feishu.cn/docx/AWxrdwbH1oWZrvx312IcsWt4nUf)
