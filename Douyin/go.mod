@@ -5,6 +5,7 @@ go 1.20
 require (
 	github.com/dgrijalva/jwt-go v3.2.0+incompatible
 	github.com/disintegration/imaging v1.6.2
+	github.com/gin-contrib/pprof v1.4.0
 	github.com/gin-contrib/size v0.0.0-20220829131622-0fc0bc875336
 	github.com/gin-gonic/gin v1.9.1
 	github.com/gomodule/redigo v1.8.9
