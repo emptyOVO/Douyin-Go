@@ -16,11 +16,11 @@ func Check() gin.HandlerFunc {
 
 	return func(c *gin.Context) {
 		username := c.Query("username")
-		password := c.Query("username")
-		//正则表示5～16字节，允许字母、数字、下划线，以字母开头
-		matchString := "^[a-zA-Z][a-zA-Z0-9_]{4,15}$"
-		usernameMatch, _ := regexp.MatchString(matchString, username)
-		passwordMatch, _ := regexp.MatchString(matchString, password)
+		password := c.Query("password")
+		matchStringP := "^[a-zA-Z][a-zA-Z0-9_]{4,15}$"                                   //密码格式
+		matchStringU := "^[A-Za-z0-9\\u4e00-\\u9fa5]+@[a-zA-Z0-9_-]+(.[a-zA-Z0-9_-]+)+$" //用户名邮箱格式
+		usernameMatch, _ := regexp.MatchString(matchStringU, username)
+		passwordMatch, _ := regexp.MatchString(matchStringP, password)
 
 		if usernameMatch && passwordMatch != true {
 			c.JSON(http.StatusOK, common.Response{

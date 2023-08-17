@@ -11,6 +11,9 @@ func RouterInit(r *gin.Engine) {
 	apiRouter := r.Group("/douyin")
 	// 基础接口
 	apiRouter.GET("/feed/", controller.Feed)
+
+	//apiRouter.GET("/captcha/", controller.SendMail)
+
 	apiRouter.GET("/user/", middleware.TokenAuth(), controller.UserInfo)
 	apiRouter.POST("/user/register/", middleware.Check(), controller.Register) //中间件检查账号密码是否合法
 	apiRouter.POST("/user/login/", controller.Login)

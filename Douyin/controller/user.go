@@ -1,10 +1,12 @@
 package controller
 
 import (
+	"Douyin/cache"
 	"Douyin/common"
 	"Douyin/dao"
 	"Douyin/service"
 	"github.com/gin-gonic/gin"
+	"github.com/gomodule/redigo/redis"
 	"log"
 	"net/http"
 	"strconv"
@@ -22,12 +24,20 @@ type UserResponse struct {
 }
 
 // Register 用户注册接口
-// TODO: 后续可以增加短信或邮箱验证码验证
+// 已增加邮箱验证码验证，相关代码已注释
 func Register(c *gin.Context) {
 
 	username := c.Query("username")
 	password := c.Query("password")
+	//captcha := c.Query("captcha")
 
+	conn := cache.RedisPool.Get()
+	defer func(conn redis.Conn) {
+		err := conn.Close()
+		if err != nil {
+		}
+	}(conn)
+	//if captcha==cache.getCaptcha(username){
 	info, err := service.UserRegister(username, password)
 	if err != nil {
 		log.Println(err.Error())
@@ -43,6 +53,8 @@ func Register(c *gin.Context) {
 		})
 		return
 	}
+	//}
+
 }
 
 // Login 用户登录接口
