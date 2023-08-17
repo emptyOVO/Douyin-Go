@@ -88,8 +88,8 @@ ps: 本来想着github上找一找类似spingsecurity之类的安全框架进行
 
 在utils层，service层，middleware层，common层和cache层均进行了单元测试的覆盖，对每个函数进行了测试，大致做到了高覆盖率（感觉dao层单元测试没必要？因为service里面一并测试了）
 
-##  四，演示视频（手机端apk联调）
-详情见飞书云文档：[飞书文档](https://owpzimaggfm.feishu.cn/docx/AWxrdwbH1oWZrvx312IcsWt4nUf)
+##  四，演示视频（手机端apk联调）与性能测试
+详情见飞书云文档：[飞书文档](https://owpzimaggfm.feishu.cn/docx/AWxrdwbH1oWZrvx312IcsWt4nUf?from=from_copylink)
 ps:录屏的时候手机会把输入密码的那一段黑屏，实际操作是没有这个问题的
 
 ##  五，学习相关笔记和代码实现笔记
