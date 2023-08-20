@@ -147,7 +147,7 @@ func (UserDao) UpdateWorkCount(userId, count int64) error {
 func (UserDao) QueryWorkCount(userid int64) (int64, error) {
 	var count int64
 	tx := db.Begin() //开启事务
-	err := tx.Raw("SELECT COUNT(*) FROM video WHERE video.user_id = ?", userid).Scan(&count).Error
+	err := tx.Model(&Video{}).Where("user_id = ?", userid).Count(&count).Error
 	if err != nil {
 		tx.Rollback() //事务回滚
 		return 0, err
@@ -156,54 +156,58 @@ func (UserDao) QueryWorkCount(userid int64) (int64, error) {
 	return count, nil
 }
 
-// QueryFavoriteCount 获赞的总数量
+// QueryFavoriteCount 获取获赞的总数量
 func (UserDao) QueryFavoriteCount(userid int64) (int64, error) {
 	var count int64
-	tx := db.Begin() //开启事务
-	err := tx.Raw("SELECT COUNT(*) FROM `like` WHERE `like`.user_id = ?", userid).Scan(&count).Error
+	tx := db.Begin()
+	defer tx.Commit()
+	err := tx.Model(&Like{}).Where("user_id = ?", userid).Count(&count).Error
 	if err != nil {
-		tx.Rollback() //事务回滚
+		tx.Rollback()
 		return 0, err
 	}
-	tx.Commit() //事务提交
 	return count, nil
 }
 
-// QueryTotalFavorite  获取收获的赞总数
+// QueryTotalFavorite 获取收获的赞总数
 func (UserDao) QueryTotalFavorite(userid int64) (int64, error) {
 	var count int64
-	tx := db.Begin() //开启事务
-	err := tx.Raw("SELECT COUNT(*) FROM `like` WHERE `like`.video_id in (SELECT video_id FROM video WHERE video.user_id  = ? )", userid).Scan(&count).Error
+	tx := db.Begin()
+	defer tx.Commit()
+	err := tx.Model(&Like{}).
+		Select("COUNT(*)").
+		Joins("JOIN video ON like.video_id = video.video_id").
+		Where("video.user_id = ?", userid).
+		Count(&count).Error
 	if err != nil {
-		tx.Rollback() //事务回滚
+		tx.Rollback()
 		return 0, err
 	}
-	tx.Commit() //事务提交
 	return count, nil
 }
 
-// QueryFollowCount  获取关注的用户数
+// QueryFollowCount 获取关注的用户数
 func (UserDao) QueryFollowCount(userid int64) (int64, error) {
 	var count int64
-	tx := db.Begin() //开启事务
-	err := tx.Raw("SELECT COUNT(*) FROM `follow` WHERE `follow`.follow_id = ?", userid).Scan(&count).Error
+	tx := db.Begin()
+	defer tx.Commit()
+	err := tx.Model(&Follow{}).Where("follow_id = ?", userid).Count(&count).Error
 	if err != nil {
-		tx.Rollback() //事务回滚
+		tx.Rollback()
 		return 0, err
 	}
-	tx.Commit() //事务提交
 	return count, nil
 }
 
-// QueryFollowerCount  获取粉丝数
+// QueryFollowerCount 获取粉丝数
 func (UserDao) QueryFollowerCount(userid int64) (int64, error) {
 	var count int64
-	tx := db.Begin() //开启事务
-	err := tx.Raw("SELECT COUNT(*) FROM `follow` WHERE `follow`.followed_id = ?", userid).Scan(&count).Error
+	tx := db.Begin()
+	defer tx.Commit()
+	err := tx.Model(&Follow{}).Where("followed_id = ?", userid).Count(&count).Error
 	if err != nil {
-		tx.Rollback() //事务回滚
+		tx.Rollback()
 		return 0, err
 	}
-	tx.Commit() //事务提交
 	return count, nil
 }

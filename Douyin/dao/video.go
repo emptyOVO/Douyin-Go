@@ -89,16 +89,12 @@ func (VideoDao) UpdateFavoriteCount(videoId, count int64) error {
 
 func (VideoDao) QueryUserIdByVideoId(videoId int64) (int64, error) {
 	var userid int64
-	tx := db.Begin() //开启事务
-	err := tx.Raw("SELECT user_id FROM video WHERE video.video_id = ?", videoId).Scan(&userid).Error
+	err := db.Table("video").Select("user_id").Where("video_id = ?", videoId).Scan(&userid).Error
 	if err != nil {
-		tx.Rollback() //事务回滚
 		return 0, err
 	}
-	tx.Commit() //事务提交
 	return userid, nil
 }
-
 func (VideoDao) QueryVideoByUserId(userid int64) ([]Video, error) {
 	var videoLists []Video
 	//预分配

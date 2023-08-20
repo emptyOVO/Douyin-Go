@@ -39,16 +39,11 @@ func (MessageDao) AddMessage(message *Message) error {
 	return nil
 }
 
-// QueryMessageLists 消息记录
 func (MessageDao) QueryMessageLists(userid, ToUserId int64, preMsgTime int64) ([]Message, error) {
 	var MessageLists []Message
-	MessageLists = make([]Message, 0, 10)
-	tx := db.Begin() //开启事务
-	err := tx.Raw("SELECT * FROM `message` WHERE message.create_time>? and ((to_user_id = ? and message.from_user_id  = ?) or (to_user_id = ? and message.from_user_id = ?)) ORDER BY  create_time", preMsgTime, userid, ToUserId, ToUserId, userid).Scan(&MessageLists).Error
+	err := db.Table("message").Where("create_time > ? AND ((to_user_id = ? AND from_user_id = ?) OR (to_user_id = ? AND from_user_id = ?))", preMsgTime, userid, ToUserId, ToUserId, userid).Order("create_time").Find(&MessageLists).Error
 	if err != nil {
-		tx.Rollback() //事务回滚
 		return nil, err
 	}
-	tx.Commit() //事务提交
 	return MessageLists, nil
 }

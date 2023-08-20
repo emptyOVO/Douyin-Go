@@ -67,38 +67,29 @@ func (FollowDao) DeleteFollow(follow *Follow) error {
 
 func (FollowDao) QueryFollowLists(userid int64) ([]User, error) {
 	var userLists []User
-	tx := db.Begin() //开启事务
-	err := tx.Raw("SELECT * FROM  `user` WHERE user.user_id IN ( SELECT follow.followed_id FROM follow WHERE follow.follow_id = ? )", userid).Scan(&userLists).Error
+	err := db.Table("user").Where("user_id IN (?)", db.Table("follow").Select("followed_id").Where("follow_id = ?", userid)).Scan(&userLists).Error
 	if err != nil {
-		tx.Rollback() //错误则事务回滚
 		return nil, err
 	}
 	fmt.Printf("%#v", userLists)
-	tx.Commit() //事务提交
 	return userLists, nil
 }
 func (FollowDao) QueryFollowerLists(userid int64) ([]User, error) {
 	var userLists []User
-	tx := db.Begin() //开启事务
-	err := tx.Raw("SELECT * FROM  `user` WHERE user.user_id IN ( SELECT follow.follow_id FROM follow WHERE follow.followed_id = ? )", userid).Scan(&userLists).Error
+	err := db.Table("user").Where("user_id IN (?)", db.Table("follow").Select("follow_id").Where("followed_id = ?", userid)).Scan(&userLists).Error
 	if err != nil {
-		tx.Rollback() //错误则事务回滚
 		return nil, err
 	}
 	fmt.Printf("%#v", userLists)
-	tx.Commit() //事务提交
 	return userLists, nil
 }
-
 func (FollowDao) QueryEachFollow(userid int64) ([]User, error) {
 	var userLists []User
-	tx := db.Begin() //开启事务
-	err := tx.Raw("SELECT * FROM  `user` WHERE user.user_id != ?	 and user.user_id in \n(SELECT DISTINCT follow.followed_id FROM  follow \njoin\n(SELECT follow.follow_id FROM follow WHERE follow.followed_id = ?) a \non\na.follow_id = follow.followed_id) ", userid, userid).Scan(&userLists).Error
+	subQuery := db.Table("follow").Select("follow_id").Where("followed_id = ?", userid)
+	err := db.Table("user").Where("user_id != ? AND user_id IN (?)", userid, db.Table("follow").Select("DISTINCT followed_id").Joins("JOIN (?) a ON a.follow_id = follow.followed_id", subQuery)).Scan(&userLists).Error
 	if err != nil {
-		tx.Rollback() //错误则事务回滚
 		return nil, err
 	}
 	fmt.Printf("%#v", userLists)
-	tx.Commit() //事务提交
 	return userLists, nil
 }
