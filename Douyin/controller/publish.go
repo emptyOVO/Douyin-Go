@@ -8,8 +8,11 @@ import (
 	"Douyin/utils"
 	"fmt"
 	"github.com/gin-gonic/gin"
+	//"github.com/tencentyun/cos-go-sdk-v5"
+	//"golang.org/x/net/context"
 	"log"
 	"net/http"
+	//"net/url"
 	"path/filepath"
 	"strconv"
 )
@@ -85,9 +88,23 @@ func Publish(c *gin.Context) {
 		})
 		return
 	}
+
+	/*//fixme:使用对象存储
+	// 初始化腾讯云COS客户端
+	client := createCosClient()
+	// 指定上传到COS的路径和文件名
+	objectKey := "public/" + finalName
+	// 创建上传请求
+	_, err = client.Object.Put(context.TODO(), objectKey, file, nil)
+	if err != nil {
+		http.Error(w, "Failed to upload file to COS", http.StatusInternalServerError)
+		return
+	}
+	fmt.Fprintf(w, "File uploaded successfully")*/
+
 	//静态资源的地址
-	playUrl := "http://" + config.C.Resource.Ipaddress + ":" + config.C.Resource.Port + "/" + "public/" + finalName
-	coverUrl := "http://" + config.C.Resource.Ipaddress + ":" + config.C.Resource.Port + "/" + "public/" + finalName + ".png"
+	playUrl := "https://" + config.C.Resource.Ipaddress + ":" + config.C.Resource.Port + "/" + "public/" + finalName
+	coverUrl := "https://" + config.C.Resource.Ipaddress + ":" + config.C.Resource.Port + "/" + "public/" + finalName + ".png"
 	//发布视频
 	err = service.PublishVideo(userid, playUrl, coverUrl, title)
 
@@ -104,3 +121,16 @@ func Publish(c *gin.Context) {
 	})
 	return
 }
+
+/*func createCosClient() *cos.Client {
+	u, _ := url.Parse("https://tencentobject-1320078852.cos-website.ap-guangzhou.myqcloud.com")
+	b := &cos.BaseURL{BucketURL: u}
+	client := cos.NewClient(b, &http.Client{
+		Transport: &cos.AuthorizationTransport{
+			SecretID:  "**************************",
+			SecretKey: "**************************",
+		},
+	})
+	return client
+}
+*/
